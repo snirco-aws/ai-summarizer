@@ -22,8 +22,8 @@ const columns = (deleteJob, getJobSummary, downloadSummary) => {
     dataIndex: 'jobStatus',
     key: 'jobStatus',
     render: (text) => {
-      const color = text === 'in progress' ? 'black' : 'green'
-      return <span style={{ color: color }}>{"in_progress" ? 'In Progress' : 'Completed'}</span>
+      const color = text === 'in_progress' ? 'grey' : 'green'
+      return <span style={{ color: color }}>{text}</span>
     }
   },
   {
@@ -33,12 +33,12 @@ const columns = (deleteJob, getJobSummary, downloadSummary) => {
       return (
         <ButtonGroup>
           <Tooltip title="Preview">
-            <Button type='text' onClick={getJobSummary({ eTag: job.eTag, username: job.username })}>
+            <Button type='text' disabled={ job.jobStatus === 'in_progress' } onClick={getJobSummary({ eTag: job.eTag, username: job.username })}>
               <EyeTwoTone />
             </Button>
           </Tooltip>
           <Tooltip title="Download" onClick={downloadSummary({ eTag: job.eTag, username: job.username })}>
-            <Button type='text'>
+            <Button type='text' disabled={ job.jobStatus === 'in_progress' }>
               <DownloadOutlined/>
             </Button>
           </Tooltip>
