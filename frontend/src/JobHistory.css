@@ -1,0 +1,13 @@
+.Table {
+  text-align: center;
+}
+
+.FileBoxHeader {
+  display: flex;
+  justify-content: center;
+}
+
+.RefreshButton {
+  align-self: center;
+  margin-left: 20px;
+}

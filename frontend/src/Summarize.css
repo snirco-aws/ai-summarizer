@@ -1,0 +1,40 @@
+.FileBox {
+  /* border: 1px solid red; */
+  /* height: 80vh; */
+}
+
+.RadioGroup {
+  margin: 20px;
+}
+
+.Website {
+  width: 50%;
+}
+
+.TextArea {
+  width: 80%;
+}
+
+.UploadButton {
+  width: 200px;
+}
+
+.Input {
+  /* display: flex; */
+  /* justify-content: center; */
+  margin: 0 0 20px 0;
+  /* height: 30vh; */
+  /* align-items: center; */
+}
+
+.Button {
+  margin-bottom: 20px;
+}
+
+.SupportedFileTypes {
+  margin-top: 20px;
+
+  .fileTypes {
+    margin-top: 10px;
+  }
+}
