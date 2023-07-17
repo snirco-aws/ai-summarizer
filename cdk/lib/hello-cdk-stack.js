@@ -5,6 +5,7 @@ const { Table, AttributeType } = require('aws-cdk-lib/aws-dynamodb');
 const { S3EventSource } = require('aws-cdk-lib/aws-lambda-event-sources');
 const { ServicePrincipal, Role, ManagedPolicy } = require('aws-cdk-lib/aws-iam');
 
+const bucket_name = 'sumlong2';
 class HelloCdkStack extends Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
@@ -18,10 +19,17 @@ class HelloCdkStack extends Stack {
     lambdaFullDdbAccessRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'))
 
     // Create S3 bucket
-    const bucket = new Bucket(this, 'MyFirstBucket', {
+    const bucket = new Bucket(this, bucket_name, {
       versioned: true,
       removalPolicy: RemovalPolicy.DESTROY,
-      autoDeleteObjects: true
+      autoDeleteObjects: true,
+      websiteIndexDocument: "index.html",
+      cors: [
+        {
+          allowedHeaders: ['Authorization', '*'],
+          allowedMethods: [s3.HttpMethods.PUT, s3.HttpMethods.POST, s3.HttpMethods.GET],
+          allowedOrigins: ['*']
+        }]
     })
 
     // Craete DynamoDB table for summary jobs
@@ -85,6 +93,25 @@ class HelloCdkStack extends Stack {
       timeout: Duration.minutes(1),
       removalPolicy: RemovalPolicy.DESTROY
     })
+
+    const getS3SignedUrlLambda = new Function(this, 'getS3SignedUrlLambda', {
+      runtime: aws_lambda.Runtime.NODEJS_18_X,
+      code: Code.fromAsset(__dirname + '/../presign/'),
+      functionName: 'getS3SignedUrlLambda',
+      handler: 'index.handler',
+      memorySize: 256,
+      timeout: cdk.Duration.seconds(10),
+      environment: {
+        UPLOAD_BUCKET: bucket.bucketName,
+        URL_EXPIRATION_SECONDS: (300).toString(),
+        ALLOWED_ORIGIN: '*',
+      },
+      logRetention: RetentionDays.ONE_WEEK,
+    })
+
+    bucket.grantReadWrite(getS3SignedUrlLambda);
+
+
   } 
 }
 

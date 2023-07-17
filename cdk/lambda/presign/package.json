@@ -1,0 +1,17 @@
+{
+  "name": "presign",
+  "version": "1.0.0",
+  "description": "presign url s3",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "*",
+    "es-mime-types": "^0.1.4",
+    "@aws-sdk/s3-request-presigner":"*"
+  }
+}
