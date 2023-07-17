@@ -13,6 +13,7 @@ class HelloCdkStack extends Stack {
     const lambdaFullDdbAccessRole = new Role(this, 'LambdaDynamoDbFullAccessRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com')
     })
+    
     // add dynamodb fullaccess and lambda basic policies to the role
     lambdaFullDdbAccessRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'))    
     lambdaFullDdbAccessRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'))

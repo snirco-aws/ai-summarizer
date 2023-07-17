@@ -17,7 +17,7 @@ export const handler = async (event) => {
     TableName: process.env.TABLE_NAME,
     KeyConditionExpression: KeyConditionExpression,
     ExpressionAttributeValues: ExpressionAttributeValues,
-    ProjectionExpression: 'username, eTag, jobStatus, createdAt'
+    ProjectionExpression: 'username, eTag, jobStatus, createdAt, objectKey'
   }
   const command = new QueryCommand(input);
   const data = await docClient.send(command);

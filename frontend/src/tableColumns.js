@@ -10,6 +10,11 @@ const columns = (deleteJob, getJobSummary, downloadSummary) => {
     key: 'username',
     width: '15%'
   }, {
+    title: 'File Name',
+    dataIndex: 'objectKey',
+    key: 'objectKey',
+    width: '15%'
+  }, {
     title: 'Created At',
     dataIndex: 'createdAt',
     key: 'createdAt',
@@ -22,23 +27,29 @@ const columns = (deleteJob, getJobSummary, downloadSummary) => {
     dataIndex: 'jobStatus',
     key: 'jobStatus',
     render: (text) => {
-      const color = text === 'in_progress' ? 'grey' : 'green'
-      return <span style={{ color: color }}>{text}</span>
+      const statusColors = {
+        in_progress: 'grey',
+        completed: 'green',
+        failed: 'red',
+      }
+      return <span style={{ color: statusColors[text] }}>{text.replace('_', ' ').toUpperCase()}</span>
     }
   },
   {
     title: 'Actions',
     key: 'actions',
     render: (job) => {
+      const disabled = job.jobStatus === 'in_progress' || job.jobStatus === 'failed'
+
       return (
         <ButtonGroup>
           <Tooltip title="Preview">
-            <Button type='text' disabled={ job.jobStatus === 'in_progress' } onClick={getJobSummary({ eTag: job.eTag, username: job.username })}>
+            <Button type='text' disabled={ disabled } onClick={getJobSummary({ eTag: job.eTag, username: job.username })}>
               <EyeTwoTone />
             </Button>
           </Tooltip>
           <Tooltip title="Download" onClick={downloadSummary({ eTag: job.eTag, username: job.username })}>
-            <Button type='text' disabled={ job.jobStatus === 'in_progress' }>
+            <Button type='text' disabled={ disabled }>
               <DownloadOutlined/>
             </Button>
           </Tooltip>
