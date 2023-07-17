@@ -8,14 +8,6 @@ const { Header, Footer, Content } = Layout
 
 const Summarizer = ({  signOut }) => {
 
-  const [file, setFile] = useState();
-  const [status, setStatus] = useState();
-  const [objectKey, setObjectKey] = useState('');
-  const [uploadURL, setUploadURL] = useState('');
-  const [error, setError] = useState('');
-  const [inputType, setInputType] = useState('upload');
-  const [inputValue, setInputValue] = useState('');
-  const [processing, setProcessing] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -81,7 +73,7 @@ const Summarizer = ({  signOut }) => {
             items={items}
           />
         </Content>
-        <Footer>Footer</Footer>
+        {/* <Footer>Footer</Footer> */}
       </Layout>
     </div>
   )
