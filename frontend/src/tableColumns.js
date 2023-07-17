@@ -48,8 +48,8 @@ const columns = (deleteJob, getJobSummary, downloadSummary) => {
               <EyeTwoTone />
             </Button>
           </Tooltip>
-          <Tooltip title="Download" onClick={downloadSummary({ eTag: job.eTag, username: job.username })}>
-            <Button type='text' disabled={ disabled }>
+          <Tooltip title="Download">
+            <Button type='text' disabled={ disabled } onClick={downloadSummary({ eTag: job.eTag, username: job.username })}>
               <DownloadOutlined/>
             </Button>
           </Tooltip>
