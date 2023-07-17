@@ -47,7 +47,7 @@ const awsconfig = {
          custom_header: async () => {
            return { Authorization: `${(await Auth.currentSession()).getIdToken().getJwtToken()}` }
          }
-      }
+        },
     ]
   }
 };

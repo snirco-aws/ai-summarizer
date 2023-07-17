@@ -27,7 +27,10 @@ const Summarize = () => {
   const [inputValue, setInputValue] = useState('');
   const [processing, setProcessing] = useState(false);
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
+
+  //TODO get user state from summarizer.js to avoid duplication
   useEffect(() => {
     Hub.listen('auth', ({ payload: { event, data } }) => {
       switch (event) {
@@ -43,6 +46,7 @@ const Summarize = () => {
       }
     });
     getUser().then(userData => setUser(userData));
+    getToken().then(userToken => setToken(userToken));
   }, []);
 
   function getUser() {
@@ -50,6 +54,17 @@ const Summarize = () => {
       .then(userData => userData)
       .catch(() => console.log('Not signed in'));
   }
+
+  const getToken = async () => {  
+    let session= await Auth.currentSession().catch(() => console.log('Not signed in'));
+    if (!session) {
+      return null
+    }
+    let jwt =  session.getIdToken().getJwtToken()
+    return jwt
+      
+  }
+
 
   const handleSummaryTypeChange = (e) => {
     setSummaryType(e.target.value);
@@ -70,17 +85,35 @@ const Summarize = () => {
   }
   };
 
+  // name: 'S3SignedURLAPI',
+  // endpoint: 'https://naizibwmgd.execute-api.us-east-1.amazonaws.com/prod',
+  // custom_header: async () => {
+  //   return { Authorization: `${(await Auth.currentSession()).getIdToken().getJwtToken()}` }
+
   const handleUpload= (file)=>{
     setProcessing(true);
-    API.get(preSignedUrlAPIUName, '/', {
-      queryStringParameters: {
+    // API.get(preSignedUrlAPIUName, '/', {
+    //   queryStringParameters: {
+    //     'contentType': file.type,
+    //     'name': encodeURIComponent(file.name),
+    //     "email": encodeURIComponent(user.attributes.email)
+    //   }
+    // })
+    
+    axios.get("https://naizibwmgd.execute-api.us-east-1.amazonaws.com/prod/" ,{
+      params: {
         'contentType': file.type,
         'name': encodeURIComponent(file.name),
         "email": encodeURIComponent(user.attributes.email)
+      },
+      headers: {
+        'Authorization': token,
       }
-    })
-      .then((response) => {
-        axios.put(response.uploadURL, file, {
+    })   
+    .then((response) => {
+      console.log(response)
+      console.log(file.type)
+        axios.put(response.data.uploadURL, file, {
           headers: {
             'content-type': file.type
           }
@@ -97,7 +130,7 @@ const Summarize = () => {
 
   const renderFileOption = () => {
     return (
-      <Upload  accept={Object.keys(fileTypes).join(',')}  beforeUpload={(file) =>  handleUpload(file)}>
+      <Upload  accept={Object.keys(acceptableFileTyoes).join(',')}  beforeUpload={(file) =>  handleUpload(file)}>
         <Button>
           <UploadOutlined />
           Upload File
@@ -129,9 +162,9 @@ const Summarize = () => {
         Generate Summary
       </Button>
 
-      {processing && <p><div class="loader "></div>
+      {processing && <div><div className="loader "></div>
             Working on it! , 
-              Go to "Job History" to see your summary</p>}
+              Go to "Job History" to see your summary</div>}
     </div>
     )
 }

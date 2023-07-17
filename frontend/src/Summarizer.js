@@ -54,8 +54,8 @@ const Summarizer = ({  signOut }) => {
   return (
     <div>
       <Layout>
-        <Header className="Header" color="blue-4">
-          <div className="logo">GenSum AI</div>
+        <Header className="Header" color="black-4">
+          <div className="logo">GenSum AI - general summerizer</div>
           <div>  <span className="user-name">{user ? user.attributes.email : ''}</span>
             {!user ? (
                 <button onClick={() => Auth.federatedSignIn({ provider: "Google" })}>Sign In</button>
@@ -73,7 +73,7 @@ const Summarizer = ({  signOut }) => {
             items={items}
           />
         </Content>
-        {/* <Footer>Footer</Footer> */}
+        { <Footer>Created by Dov Amir, Snir Cohen, Meidan Nasi</Footer> }
       </Layout>
     </div>
   )
