@@ -1,2 +1,2 @@
 # ai-summarizer
-ai summarizer app
+ai summarizer app.
