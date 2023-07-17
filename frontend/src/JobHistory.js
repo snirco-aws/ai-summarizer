@@ -13,6 +13,7 @@ const JobHistory = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeJob, setActiveJob] = useState('');
   const [summariesCache, setSummariesCache] = useState({});
+  const [downloadRequested, setDownloadRequested] = useState(false);
 
   const dataLoaded = useRef(false)
 
@@ -22,6 +23,13 @@ const JobHistory = () => {
       dataLoaded.current = true;
     }
   }, [])
+
+  useEffect(() => {
+    if (summariesCache[activeJob] && downloadRequested) {
+      runDownload()
+      setDownloadRequested(false)
+    }
+  }, [downloadRequested, summariesCache[activeJob]])
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -71,8 +79,8 @@ const JobHistory = () => {
     setActiveJob('')
   };
 
-  const runDownload = (eTag) => {
-    const blob = new Blob([summariesCache[eTag]], { type: 'text/plain;charset=utf-8' });
+  const runDownload = () => {
+    const blob = new Blob([summariesCache[activeJob]], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -82,11 +90,12 @@ const JobHistory = () => {
 
   const downloadSummary = ({ eTag, username }) => async () => {
     if (!summariesCache[eTag]) {
-      const res = await fetchSummary({ eTag, username })
-      setSummariesCache({ ...summariesCache, [eTag]: res.data.summary })
-      setActiveJob(eTag)
-    }
-    runDownload(eTag)
+      fetchSummary({ eTag, username }).then(res => {
+        setSummariesCache({ ...summariesCache, [eTag]: res.data.summary })
+        setActiveJob(eTag)
+        setDownloadRequested(true)
+      })
+    } else runDownload()
   }
 
   const renderJobs = (jobs) => {
