@@ -6,6 +6,17 @@ import fileTypes from './fileTypes';
 
 const { TextArea } = Input;
 
+const acceptableFileTyoes={
+  'text/*': ['.txt'],
+  'application/pdf': ['.pdf'],
+  'video/*': ['.mp3', '.mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm'],
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx', '.xls', '.xlsm']
+}
+
+const maxFileSize=209715200
+
 const Summarize = () => {
 
   const [summaryType, setSummaryType] = useState('file');
@@ -13,6 +24,10 @@ const Summarize = () => {
   const handleSummaryTypeChange = (e) => {
     setSummaryType(e.target.value);
   };
+
+
+
+
 
   const renderFileOption = () => {
     return (
