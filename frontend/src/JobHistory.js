@@ -127,7 +127,7 @@ const JobHistory = ({  user,token }) => {
         dataSource={jobs}
         rowKey={(record) => record.eTag}
       />
-      <Modal width={900} title="Job Summary" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal width='80%' title="Job Summary" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         {renderSummary()}
       </Modal>
     </>
