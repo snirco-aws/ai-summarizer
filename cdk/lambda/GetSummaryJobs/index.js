@@ -8,10 +8,11 @@ const ddbClient = new DynamoDBClient({
 const docClient = DynamoDBDocumentClient.from(ddbClient)
 
 export const handler = async (event) => {
-
+  console.log (event)
+  const { username} = JSON.parse(event)
   const KeyConditionExpression = "username = :v1"
   const ExpressionAttributeValues = {
-    ":v1": 'snir' 
+    ":v1": username
   }
   const input = {
     TableName: process.env.TABLE_NAME,

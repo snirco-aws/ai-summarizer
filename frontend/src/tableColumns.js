@@ -39,7 +39,8 @@ const columns = (deleteJob, getJobSummary, downloadSummary) => {
     title: 'Actions',
     key: 'actions',
     render: (job) => {
-      const disabled = job.jobStatus === 'in_progress' || job.jobStatus === 'failed'
+      const disabled = job.jobStatus === 'in_progress' 
+      // || job.jobStatus === 'failed'
 
       return (
         <ButtonGroup>

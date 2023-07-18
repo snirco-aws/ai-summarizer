@@ -6,7 +6,7 @@ import axios from 'axios';
 import { ReloadOutlined } from '@ant-design/icons';
 import constants from './constants'
 
-const JobHistory = () => {
+const JobHistory = ({  user,token }) => {
 
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ const JobHistory = () => {
 
   useEffect(() => {
     if (!dataLoaded.current) {
-      fetchJobs();  
+      fetchJobs(user.attributes.email);  
       dataLoaded.current = true;
     }
   }, [])
@@ -31,10 +31,18 @@ const JobHistory = () => {
     }
   }, [downloadRequested, summariesCache[activeJob]])
 
-  const fetchJobs = async () => {
+  const fetchJobs = async (username) => {
+    console.log(username)
     setLoading(true);
-    const res = await axios.post(constants.base + constants.getJobs)
-    setJobs(res.data);
+    const res = await axios.post(constants.base + constants.getJobs, {
+      username
+    }, { headers: {  'Authorization': token }  })
+    console.log(res)
+    const parsedData = res.data.map(item => {
+      const objectKey = item.objectKey.replace('data/', '').replace('.gensum', ' - url');
+      return { ...item, objectKey };
+    });
+    setJobs(parsedData);
     setLoading(false);
   };
 
@@ -43,9 +51,10 @@ const JobHistory = () => {
     const res = await axios.post(constants.base + constants.deleteJob, {
       eTag,
       username,
-    })
+    }, { headers: {  'Authorization': token }  }
+    )
     if (res.status === 200) {
-      fetchJobs()
+      fetchJobs(user.attributes.email)
     }
   }
 
@@ -53,7 +62,7 @@ const JobHistory = () => {
     return axios.post(constants.base + constants.getJobSummary, {
       eTag,
       username,
-    })
+    }, { headers: {  'Authorization': token }  })
   }
 
   const getJobSummary = ({ eTag, username }) => async () => {
@@ -120,7 +129,8 @@ const JobHistory = () => {
       <div className='FileBoxHeader'>
         <h2>Your Summarizing Jobs History</h2>
         <Tooltip title="Refresh Jobs">
-          <Button className='RefreshButton' onClick={fetchJobs} icon={<ReloadOutlined />} />
+          <Button className='RefreshButton'  onClick={() => fetchJobs(user.attributes.email)} icon={<ReloadOutlined />} />
+          
         </Tooltip>
       </div>
       { renderJobs(jobs) }

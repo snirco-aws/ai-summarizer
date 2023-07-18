@@ -11,10 +11,13 @@ export const handler = async (event) => {
     console.log('event: ', JSON.stringify(event));
     const { s3 } = event.Records[0];
     const objectKey = s3.object.key;
-    const email = s3.object.email;
+    const etag= s3.object.eTag
+
+    //these 3 fields were added manualy to the s3 event object by the caller
+    const email = s3.object.email;  
     const summary = s3.object.summary;
     const status = s3.object.status;
-    const etag= s3.object.eTag
+ 
 
   
     const getItemInput = {

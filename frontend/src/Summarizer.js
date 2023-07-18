@@ -9,6 +9,7 @@ const { Header, Footer, Content } = Layout
 const Summarizer = ({  signOut }) => {
 
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     Hub.listen('auth', ({ payload: { event, data } }) => {
@@ -38,6 +39,7 @@ const Summarizer = ({  signOut }) => {
     })
 
     getUser().then(userData => setUser(userData));
+    getToken().then(userToken => setToken(userToken));
   }, []);
 
   function getUser() {
@@ -46,9 +48,19 @@ const Summarizer = ({  signOut }) => {
       .catch(() => console.log('Not signed in'));
   }
 
+
+  const getToken = async () => {  
+    let session= await Auth.currentSession().catch(() => console.log('Not signed in'));
+    if (!session) {
+      return null
+    }
+    let jwt =  session.getIdToken().getJwtToken()
+    return jwt
+  }
+
   const items = [
-    { label: 'Summarize', key: '1', children: <Summarize /> },
-    { label: 'Job History', key: '2', children: <JobHistory /> },
+    { label: 'Summarize', key: '1', children: <Summarize user={user} token={token}/> },
+    { label: 'Job History', key: '2', children: <JobHistory user={user} token={token}/> },
   ]
 
   return (
@@ -66,12 +78,14 @@ const Summarizer = ({  signOut }) => {
           </div>
         </Header>
         <Content className="Content">
+        {user ? (
           <Tabs
             defaultActiveKey="1"
             className="Tabs"
             type="card"
             items={items}
           />
+          ) : (<div></div>)}
         </Content>
         { <Footer>Created by Dov Amir, Snir Cohen, Meidan Nasi</Footer> }
       </Layout>

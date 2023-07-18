@@ -20,50 +20,16 @@ const acceptableFileTyoes={
 
 const maxFileSize=209715200
 
-const Summarize = () => {
+const Summarize = ({  user,token }) => {
 
   const [summaryType, setSummaryType] = useState('file');
   const [error, setError] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [processing, setProcessing] = useState(false);
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
 
 
-  //TODO get user state from summarizer.js to avoid duplication
-  useEffect(() => {
-    Hub.listen('auth', ({ payload: { event, data } }) => {
-      switch (event) {
-        case 'signIn':
-        case 'cognitoHostedUI':
-          getUser().then(userData => setUser(userData));
-          break;
-        case 'signOut':
-          setUser(null);
-          break;
-        default:
-          break;
-      }
-    });
-    getUser().then(userData => setUser(userData));
-    getToken().then(userToken => setToken(userToken));
-  }, []);
 
-  function getUser() {
-    return Auth.currentAuthenticatedUser()
-      .then(userData => userData)
-      .catch(() => console.log('Not signed in'));
-  }
 
-  const getToken = async () => {  
-    let session= await Auth.currentSession().catch(() => console.log('Not signed in'));
-    if (!session) {
-      return null
-    }
-    let jwt =  session.getIdToken().getJwtToken()
-    return jwt
-      
-  }
 
 
   const handleSummaryTypeChange = (e) => {
