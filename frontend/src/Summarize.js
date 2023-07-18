@@ -3,7 +3,7 @@ import './Summarize.css';
 import { Radio, Upload, Input, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import fileTypes from './fileTypes';
-// import { API,  Hub, Auth } from 'aws-amplify';
+
 import axios from 'axios';
 const { TextArea } = Input;
 
