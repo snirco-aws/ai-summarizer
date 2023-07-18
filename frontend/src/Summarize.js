@@ -3,7 +3,7 @@ import './Summarize.css';
 import { Radio, Upload, Input, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import fileTypes from './fileTypes';
-import { API,  Hub, Auth } from 'aws-amplify';
+// import { API,  Hub, Auth } from 'aws-amplify';
 import axios from 'axios';
 const { TextArea } = Input;
 
@@ -26,11 +26,7 @@ const Summarize = ({  user,token }) => {
   const [error, setError] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [processing, setProcessing] = useState(false);
-
-
-
-
-
+  const [fileList, setFileList] = useState([]);
 
   const handleSummaryTypeChange = (e) => {
     setSummaryType(e.target.value);
@@ -48,7 +44,9 @@ const Summarize = ({  user,token }) => {
       myfile.value=inputValue
       myfile.inputType=summaryType
       handleUpload(myfile)
-  }
+    } else if (summaryType=='upload' && fileList.length>0) {
+      handleUpload(fileList[0])
+    }
   };
 
   // name: 'S3SignedURLAPI',
@@ -94,18 +92,25 @@ const Summarize = ({  user,token }) => {
       }, 7000);
   }
 
+  const updateFilesList = (file) => {
+    setFileList([file]);
+    return false;
+  }
+
   const renderFileOption = () => {
     return (
-      <Upload  accept={Object.keys(acceptableFileTyoes).join(',')}  beforeUpload={(file) =>  handleUpload(file)}>
-        <Button>
-          <UploadOutlined />
-          Upload File
-        </Button>
+      <div>
+        <Upload fileList={fileList} accept={Object.keys(acceptableFileTyoes).join(',')}  beforeUpload={updateFilesList}>
+          <Button>
+            <UploadOutlined />
+            Select File
+          </Button>
+        </Upload>
         <div className='SupportedFileTypes'>
           Supported File Type:
           {fileTypes}
         </div>
-      </Upload>
+      </div>
     )
   }
   const renderWebsiteOption = () => <Input placeholder="Enter Website or Youtube URL"  className='Website' onChange={handleInputChange} />
