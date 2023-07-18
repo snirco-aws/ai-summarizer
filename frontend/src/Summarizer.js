@@ -1,9 +1,9 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Summarizer.css'
 import Summarize from './Summarize'
 import JobHistory from './JobHistory'
-import { Tabs, Layout, Button } from 'antd'
-import { API, Auth, Hub } from 'aws-amplify';
+import { Tabs, Layout } from 'antd'
+import { Auth, Hub } from 'aws-amplify';
 const { Header, Footer, Content } = Layout
 
 const Summarizer = ({  signOut }) => {
@@ -84,6 +84,7 @@ const Summarizer = ({  signOut }) => {
             className="Tabs"
             type="card"
             items={items}
+            destroyInactiveTabPane
           />
           ) : (<div></div>)}
         </Content>
