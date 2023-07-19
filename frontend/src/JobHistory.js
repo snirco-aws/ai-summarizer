@@ -3,7 +3,7 @@ import './JobHistory.css';
 import { Table, Modal, Button, Tooltip } from 'antd';
 import columns from './tableColumns';
 import axios from 'axios';
-import { ReloadOutlined } from '@ant-design/icons';
+import { ReloadOutlined, LoadingOutlined } from '@ant-design/icons';
 import constants from './constants'
 
 const JobHistory = ({  user,token }) => {
@@ -14,6 +14,7 @@ const JobHistory = ({  user,token }) => {
   const [activeJob, setActiveJob] = useState('');
   const [summariesCache, setSummariesCache] = useState({});
   const [downloadRequested, setDownloadRequested] = useState(false);
+  const [loadingSummary, setLoadingSummary] = useState(false)
 
   const dataLoaded = useRef(false)
 
@@ -32,7 +33,6 @@ const JobHistory = ({  user,token }) => {
   }, [downloadRequested, summariesCache[activeJob]])
 
   const fetchJobs = async (username) => {
-    console.log(username)
     setLoading(true);
     const res = await axios.post(constants.base + constants.getJobs, {
       username
@@ -71,9 +71,11 @@ const JobHistory = ({  user,token }) => {
       setActiveJob(eTag)
       return
     }
+    setLoadingSummary(true)
     const res = await fetchSummary({ eTag, username  })
     if (res.status === 200) {
       setSummariesCache({ ...summariesCache, [eTag]: res.data.summary })
+      setLoadingSummary(false)
       setActiveJob(eTag)
     }
   }
@@ -99,13 +101,21 @@ const JobHistory = ({  user,token }) => {
 
   const downloadSummary = ({ eTag, username }) => async () => {
     if (!summariesCache[eTag]) {
+      setLoadingSummary(true)
       fetchSummary({ eTag, username }).then(res => {
         setSummariesCache({ ...summariesCache, [eTag]: res.data.summary })
         setActiveJob(eTag)
         setDownloadRequested(true)
+        setLoadingSummary(false)
       })
     } else runDownload()
   }
+
+  const renderSummary = () => (
+    loadingSummary ?
+    <div className='Loading'><LoadingOutlined /></div> :
+    <p>{summariesCache[activeJob]}</p>
+  )
 
   const renderJobs = (jobs) => {
     return (
@@ -113,12 +123,12 @@ const JobHistory = ({  user,token }) => {
       <Table
         className='Table'
         loading={loading}
-        columns={columns(deleteJob, getJobSummary, downloadSummary)}
+        columns={columns(deleteJob, getJobSummary, downloadSummary, loadingSummary)}
         dataSource={jobs}
         rowKey={(record) => record.eTag}
       />
-      <Modal title="Job Summary" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>{summariesCache[activeJob]}</p>
+      <Modal width='80%' title="Job Summary" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        {renderSummary()}
       </Modal>
     </>
     )

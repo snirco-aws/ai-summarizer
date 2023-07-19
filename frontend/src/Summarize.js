@@ -1,6 +1,6 @@
-import React, { useRef, useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import './Summarize.css';
-import { Radio, Upload, Input, Button } from 'antd';
+import { Radio, Upload, Input, Button, Popover } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import fileTypes from './fileTypes';
 
@@ -98,18 +98,24 @@ const Summarize = ({  user,token }) => {
   }
 
   const renderFileOption = () => {
+
+const fileTypesTitle = (
+  <div>
+    <div> Supprted File Types:</div>
+    <div>{fileTypes}</div>
+  </div>
+  )
+
     return (
       <div>
         <Upload fileList={fileList} accept={Object.keys(acceptableFileTyoes).join(',')}  beforeUpload={updateFilesList}>
-          <Button>
-            <UploadOutlined />
-            Select File
-          </Button>
+          <Popover content={fileTypes} title="Supprted File Types">
+            <Button>
+              <UploadOutlined />
+              Select File
+            </Button>
+          </Popover>
         </Upload>
-        <div className='SupportedFileTypes'>
-          Supported File Type:
-          {fileTypes}
-        </div>
       </div>
     )
   }
