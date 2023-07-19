@@ -31,6 +31,7 @@ const getUploadURL = async function(event) {
   const contentType = event.queryStringParameters.contentType
   const filename = event.queryStringParameters.name;
   const email = event.queryStringParameters.email;
+  const title = event.queryStringParameters.title;
   const extension = getExtension(contentType);
   const s3Key = `data/`+ decodeURIComponent(filename)  //${apiRequestId}.${extension};
 
@@ -39,7 +40,8 @@ const getUploadURL = async function(event) {
     Bucket: process.env.UPLOAD_BUCKET,
     Key: s3Key,
     ContentType: contentType,
-    Metadata:{'email': decodeURIComponent(email)}
+    Metadata:{'email': decodeURIComponent(email),'title':decodeURIComponent(title)}
+
 
   };
 

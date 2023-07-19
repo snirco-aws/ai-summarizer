@@ -9,7 +9,7 @@ const docClient = DynamoDBDocumentClient.from(ddbClient)
 
 export const handler = async (event) => {
   console.log (event)
-  const { username} = JSON.parse(event)
+  const { username} = JSON.parse(event.body)
   const KeyConditionExpression = "username = :v1"
   const ExpressionAttributeValues = {
     ":v1": username
@@ -18,7 +18,7 @@ export const handler = async (event) => {
     TableName: process.env.TABLE_NAME,
     KeyConditionExpression: KeyConditionExpression,
     ExpressionAttributeValues: ExpressionAttributeValues,
-    ProjectionExpression: 'username, eTag, jobStatus, createdAt, objectKey'
+    ProjectionExpression: 'username, eTag, jobStatus, createdAt, objectKey, title'
   }
   const command = new QueryCommand(input);
   const data = await docClient.send(command);

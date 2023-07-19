@@ -17,7 +17,7 @@ export const handler = async (event) => {
     const email = s3.object.email;  
     const summary = s3.object.summary;
     const status = s3.object.status;
- 
+    const title = s3.object.title;
 
   
     const getItemInput = {
@@ -64,6 +64,7 @@ export const handler = async (event) => {
           Item: {
             username: email,
             objectKey: objectKey,
+            title: title,
             eTag: etag,
             size: s3.object.size,
             createdAt: new Date().toISOString(),

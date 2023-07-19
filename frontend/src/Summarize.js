@@ -22,7 +22,7 @@ const maxFileSize=209715200
 
 const Summarize = ({  user,token }) => {
 
-  const [summaryType, setSummaryType] = useState('file');
+  const [summaryType, setSummaryType] = useState('upload');
   const [error, setError] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [processing, setProcessing] = useState(false);
@@ -63,12 +63,15 @@ const Summarize = ({  user,token }) => {
     //     "email": encodeURIComponent(user.attributes.email)
     //   }
     // })
-    
+    let title=file.name
+    if (title.endsWith("gensum"))
+      title=file.value.substring(0, 60)
     axios.get("https://naizibwmgd.execute-api.us-east-1.amazonaws.com/prod/" ,{
       params: {
         'contentType': file.type,
         'name': encodeURIComponent(file.name),
-        "email": encodeURIComponent(user.attributes.email)
+        "email": encodeURIComponent(user.attributes.email),
+        "title": encodeURIComponent(title)
       },
       headers: {
         'Authorization': token,

@@ -39,10 +39,12 @@ const JobHistory = ({  user,token }) => {
     }, { headers: {  'Authorization': token }  })
     console.log(res)
     const parsedData = res.data.map(item => {
-      const objectKey = item.objectKey.replace('data/', '').replace('.gensum', ' - url');
-      return { ...item, objectKey };
+      const filename = item.objectKey.replace('data/', '').replace('.gensum', ' - url');
+      if (!item.title)
+        item.title=filename
+      return { ...item };
     });
-    setJobs(parsedData);
+    setJobs( parsedData);
     setLoading(false);
   };
 

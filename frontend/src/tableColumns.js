@@ -3,21 +3,22 @@ import { DownloadOutlined, EyeTwoTone, DeleteTwoTone } from '@ant-design/icons'
 
 const ButtonGroup = Button.Group;
 const columns = (deleteJob, getJobSummary, downloadSummary) => {
-
+  // {
+  //   title: 'User',
+  //   dataIndex: 'username',
+  //   key: 'username',
+  //   width: '15%'
+  // }, 
   return ([{
-    title: 'User',
-    dataIndex: 'username',
-    key: 'username',
-    width: '15%'
-  }, {
-    title: 'File Name',
-    dataIndex: 'objectKey',
-    key: 'objectKey',
-    width: '15%'
+    title: 'Name',
+    dataIndex: 'title',
+    key: 'title',
+    width: '30%'
   }, {
     title: 'Created At',
     dataIndex: 'createdAt',
     key: 'createdAt',
+    defaultSortOrder: 'descend',
     sorter: (a, b) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf(),
     render: (date) => new Date(date).toDateString(),
     width: '25%',
